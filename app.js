@@ -15,7 +15,6 @@ const argv = yargs
    .argv;
 
 var encodedAddress = encodeURIComponent(argv.address);
-console.log(encodedAddress);
 
 request({
   url: `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}`,
@@ -23,8 +22,13 @@ request({
 }, (error, response, body) => {
   // console.log(JSON.stringify(response, undefined, 2));
 
-  console.log(`Address: ${body.results[0].formatted_address}`);
-  console.log(`Latitude: ${body.results[0].geometry.location.lat}`);
-  console.log(`Longi: ${body.results[0].geometry.location.lng}`);
-
+  if (error)  {
+    console.log('Unabld to connect to Goo Servers');
+  } else if (body.status === 'ZERO_RESULTS') {
+    console.log('unable to to find that address');
+  } else if (body.status === 'OK') {
+    console.log(`Address: ${body.results[0].formatted_address}`);
+    console.log(`Latitude: ${body.results[0].geometry.location.lat}`);
+    console.log(`Longi: ${body.results[0].geometry.location.lng}`);
+  }
 });
